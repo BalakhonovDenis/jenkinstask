@@ -4,6 +4,8 @@ services:
   apache_files:
     image: den0303/apache_testy:latest
     container_name: apaches
+    networks:
+      - my_network
    
   nginx_files:
     image: den0303/nginx_testy:latest
@@ -11,5 +13,10 @@ services:
       - "80:80"
     depends_on:
       - apache_files
-    container_name: task14.3
+    container_name: nginx
+    networks:
+      - my_network
 
+networks:
+  my_network:
+    driver: bridge
