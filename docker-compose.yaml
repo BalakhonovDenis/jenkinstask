@@ -2,14 +2,14 @@ version: "3.9"
 
 services:
   apache_files:
-    image: den0303/apache_testy:latest
+    image: den0303/apache_testy
     container_name: apacheSe
     networks:
       custom_network:
         ipv4_address: 192.30.0.2
 
   nginx_files:
-    image: den0303/nginx_testy:latest
+    image: den0303/nginx_testy
     ports:
       - "80:80"
     depends_on:
