@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  apache_files:
+    image: den0303/apache_testy:latest
+    container_name: apaches
+   
+  nginx_files:
+    image: den0303/nginx_testy:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - apache_files
+    container_name: task14.3
+
