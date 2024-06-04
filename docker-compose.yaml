@@ -6,8 +6,6 @@ services:
     container_name: apaches
     networks:
       - my_network
-    ports:
-      - "8080:8080"
    
   nginx_files:
     image: den0303/nginx_testy:latest
