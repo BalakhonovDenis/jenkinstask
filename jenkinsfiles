@@ -1,0 +1,67 @@
+pipeline {
+    agent {
+        label 'slave1'
+    }
+    stages {
+        stage('Clone')
+        {
+            steps {
+                echo 'Building...'
+                sh '''
+                if [ -d "task18" ]; then
+                    cd task18
+                    git pull
+                    cd ..
+                else
+                    git clone https://github.com/BalakhonovDenis/jenkinstask.git
+                fi
+                '''
+            }
+        }
+        stage('Build') {
+            steps {
+                def buildNumber = env.BUILD_NUMBER
+                def nginxTag = "den0303/nginx_testy:$buildNumber"
+                def apacheTag = "den0303/apache_testy:$buildNumber"
+                sh '''
+                pwd
+                ls -la
+                docker compose down
+                docker image prune -af
+                cd /home/ubuntu/jenkins/workspace/task18/NGINX/
+                docker build -t $nginxTag .
+                cd ../APACHE/
+                docker build -t $apacheTag .
+                '''
+            }
+        }
+         stage('Push') {
+            steps {
+                def buildNumber = env.BUILD_NUMBER
+                def nginxTag = "den0303/nginx_testy:$buildNumber"
+                def apacheTag = "den0303/apache_testy:$buildNumber"
+                withCredentials([usernamePassword(credentialsId: 'dockehub-login', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                    echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                    docker push $apacheTag
+                    docker push $nginxTag
+                    '''
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh '''
+                docker compose -f docker-compose.yaml up -d
+                '''
+            }
+        }
+    }
+     post {
+        always {
+            echo 'Cleaning up...'
+            deleteDir()
+        }
+    }
+}
