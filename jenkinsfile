@@ -22,8 +22,11 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
+                pwd
+                ls -la
+                docker-compose down
                 docker image prune -af
-                cd /home/ubuntu/jenkins/workspace/part1_task18/NGINX/
+                cd /home/ubuntu/jenkins/workspace/task18/NGINX/
                 docker build -t den0303/nginx_testy:latest .
                 cd ../APACHE/
                 docker build -t den0303/apache_testy:latest .
@@ -45,11 +48,6 @@ pipeline {
             steps {
                 echo 'Deploying...'
                 sh '''
-                pwd
-                ls -la
-                cd ./jenkinstask/
-                ls -la
-                docker-compose down
                 docker-compose -f docker-compose.yaml up -d
                 '''
             }
