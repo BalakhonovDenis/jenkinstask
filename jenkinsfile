@@ -24,9 +24,9 @@ pipeline {
                 sh '''
                 docker image prune -af
                 cd /home/ubuntu/jenkins/workspace/part1_task18/NGINX/
-                docker build -t den0303/nginx_testy .
+                docker build -t den0303/nginx_testy:latest .
                 cd ../APACHE/
-                docker build -t den0303/apache_testy .
+                docker build -t den0303/apache_testy:latest .
                 '''
             }
         }
@@ -35,8 +35,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockehub-login', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh '''
                     echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                    docker push den0303/apache_testy
-                    docker push den0303/nginx_testy
+                    docker push den0303/apache_testy:latest
+                    docker push den0303/nginx_testy:latest
                     '''
                 }
             }
