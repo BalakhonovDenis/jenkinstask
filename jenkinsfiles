@@ -3,8 +3,7 @@ pipeline {
         label 'slave1'
     }
     stages {
-        stage('Clone')
-        {
+        stage('Clone') {
             steps {
                 echo 'Building...'
                 sh '''
@@ -20,32 +19,32 @@ pipeline {
         }
         stage('Build') {
             steps {
-                def buildNumber = env.BUILD_NUMBER
-                def nginxTag = "den0303/nginx_testy:$buildNumber"
-                def apacheTag = "den0303/apache_testy:$buildNumber"
-                sh '''
-                pwd
-                ls -la
-                docker compose down
-                docker image prune -af
-                cd /home/ubuntu/jenkins/workspace/task18/NGINX/
-                docker build -t $nginxTag .
-                cd ../APACHE/
-                docker build -t $apacheTag .
-                '''
+                script {
+                    def buildTag = "build-${env.BUILD_NUMBER}"
+                    sh '''
+                    pwd
+                    ls -la
+                    docker compose down
+                    docker image prune -af
+                    cd /home/ubuntu/jenkins/workspace/task18/NGINX/
+                    docker build -t den0303/nginx_testy:${buildTag} .
+                    cd ../APACHE/
+                    docker build -t den0303/apache_testy:${buildTag} .
+                    '''
+                }
             }
         }
-         stage('Push') {
+        stage('Push') {
             steps {
-                def buildNumber = env.BUILD_NUMBER
-                def nginxTag = "den0303/nginx_testy:$buildNumber"
-                def apacheTag = "den0303/apache_testy:$buildNumber"
-                withCredentials([usernamePassword(credentialsId: 'dockehub-login', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh '''
-                    echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-                    docker push $apacheTag
-                    docker push $nginxTag
-                    '''
+                script {
+                    def buildTag = "build-${env.BUILD_NUMBER}"
+                    withCredentials([usernamePassword(credentialsId: 'dockehub-login', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh '''
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        docker push den0303/apache_testy:${buildTag}
+                        docker push den0303/nginx_testy:${buildTag}
+                        '''
+                    }
                 }
             }
         }
@@ -58,7 +57,7 @@ pipeline {
             }
         }
     }
-     post {
+    post {
         always {
             echo 'Cleaning up...'
             deleteDir()
