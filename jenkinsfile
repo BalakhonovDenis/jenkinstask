@@ -8,7 +8,6 @@ pipeline {
             steps {
                 echo 'Building...'
                 sh '''
-                # Проверяем, существует ли уже директория с репозиторием
                 if [ -d "task18" ]; then
                     cd task18
                     git pull
@@ -56,7 +55,7 @@ pipeline {
      post {
         always {
             echo 'Cleaning up...'
-            deleteDir() // Удаление workspace
+            deleteDir()
         }
     }
 }
