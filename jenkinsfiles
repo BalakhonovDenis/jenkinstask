@@ -20,7 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    def buildTag = "build-${env.BUILD_NUMBER}"
+                    def buildTag = "${env.BUILD_NUMBER}"
                     sh '''
                     pwd
                     ls -la
@@ -37,7 +37,7 @@ pipeline {
         stage('Push') {
             steps {
                 script {
-                    def buildTag = "build-${env.BUILD_NUMBER}"
+                    def buildTag = "${env.BUILD_NUMBER}"
                     withCredentials([usernamePassword(credentialsId: 'dockehub-login', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh '''
                         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
