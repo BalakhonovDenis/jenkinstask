@@ -26,6 +26,7 @@ pipeline {
                 docker image prune -af
                 
                 // Заменяем сборку образов с помощью Docker на сборку с помощью Kaniko
+                chmod +x /home/ubuntu/jenkins/workspace/task188@tmp/durable-1171ddd9/script.sh.copy
                 /kaniko/executor --context=/home/ubuntu/jenkins/workspace/task188/NGINX/ --dockerfile=Dockerfile --destination=den0303/nginx_testy:latest
                 /kaniko/executor --context=/home/ubuntu/jenkins/workspace/task188/APACHE/ --dockerfile=Dockerfile --destination=den0303/apache_testy:latest
                 '''
