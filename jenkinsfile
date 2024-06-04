@@ -1,0 +1,64 @@
+pipeline {
+    agent {
+        label 'slave1'
+    }
+    stages {
+        stage('Clone')
+        {
+            steps {
+                echo 'Building...'
+                sh '''
+                # Проверяем, существует ли уже директория с репозиторием
+                if [ -d "task18" ]; then
+                    cd task18
+                    git pull
+                    cd ..
+                else
+                    git clone https://github.com/BalakhonovDenis/jenkinstask.git
+                fi
+                '''
+            }
+        }
+        stage('Build') {
+            steps {
+                sh '''
+                docker image prune -af
+                cd /home/ubuntu/jenkins/workspace/part1_task18/NGINX/
+                docker build -t den0303/nginx_testy .
+                cd ../APACHE/
+                docker build -t den0303/apache_testy .
+                '''
+            }
+        }
+         stage('Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockehub-login', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                    echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                    docker push den0303/apache_testy
+                    docker push den0303/nginx_testy
+                    '''
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh '''
+                pwd
+                ls -la
+                cd ./jenkinstask/
+                ls -la
+                docker-compose down
+                docker-compose -f docker-compose.yaml up -d
+                '''
+            }
+        }
+    }
+     post {
+        always {
+            echo 'Cleaning up...'
+            deleteDir() // Удаление workspace
+        }
+    }
+}
