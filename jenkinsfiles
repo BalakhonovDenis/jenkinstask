@@ -20,7 +20,7 @@ pipeline {
                     pwd
                     ls -la
                     docker compose down
-                    docker system prune
+                    docker system prune -y
                     #docker image prune -af
                     cd /home/ubuntu/jenkins/workspace/task18/NGINX/
                     docker build -t den0303/nginx_testy:${buildTag} .
