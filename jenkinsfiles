@@ -9,15 +9,7 @@ pipeline {
         stage('Clone') {
             steps {
                 echo 'Building...'
-                script {
-                    if (fileExists("task18")) {
-                        dir("task18") {
-                            sh "git pull"
-                        }
-                    } else {
-                        git credentialsId: 'MASTERx', url: 'git@github.com:BalakhonovDenis/jenkinstask.git'
-                    }
-                }
+                git branch: 'main', credentialsId: 'MASTERx', url: 'git@github.com:BalakhonovDenis/jenkinstask.git'
             }
         }
         stage('Build') {
