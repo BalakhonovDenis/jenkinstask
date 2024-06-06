@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     def buildTag = "${env.BUILD_NUMBER}"
-                    sh '''
+                    sh """
                     pwd
                     ls -la
                     docker compose down
@@ -30,7 +30,7 @@ pipeline {
                     docker build -t den0303/nginx_testy:${buildTag} .
                     cd ../APACHE/
                     docker build -t den0303/apache_testy:${buildTag} .
-                    '''
+                    """
                 }
             }
         }
@@ -39,11 +39,11 @@ pipeline {
                 script {
                     def buildTag = "${env.BUILD_NUMBER}"
                     withCredentials([usernamePassword(credentialsId: 'dockehub-login', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh '''
+                        sh """
                         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
                         docker push den0303/apache_testy:${buildTag}
                         docker push den0303/nginx_testy:${buildTag}
-                        '''
+                        """
                     }
                 }
             }
