@@ -9,7 +9,7 @@ pipeline {
         stage('Clone') {
             steps {
                 echo 'Building...'
-               sshagent(['github-ssh-key']) {
+                sshagent(['MASTERx']) {
                     sh '''
                     if [ -d "task18" ]; then
                         cd task18
@@ -19,6 +19,7 @@ pipeline {
                         git clone git@github.com:BalakhonovDenis/jenkinstask.git
                     fi
                     '''
+                }
             }
         }
         stage('Build') {
