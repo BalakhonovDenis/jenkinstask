@@ -9,7 +9,7 @@ pipeline {
         stage('Clone') {
             steps {
                 echo 'Building...'
-                sshagent(['MASTERx']) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'MASTERx', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
                     if [ -d "task18" ]; then
                         cd task18
