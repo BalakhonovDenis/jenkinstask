@@ -15,7 +15,7 @@ pipeline {
                     git pull
                     cd ..
                 else
-                    git clone git@github.com:BalakhonovDenis/jenkinstask.git
+                    git branch: 'main', credentialsId: 'MASTERx', url: 'git@github.com:BalakhonovDenis/jenkinstask.git'
                 fi
                 '''
             }
