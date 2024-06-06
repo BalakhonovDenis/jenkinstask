@@ -2,11 +2,11 @@ version: "3.9"
 
 services:
   apache_files:
-    image: den0303/apache_testy:latest
+    image: den0303/apache_testy:${TAG}
     container_name: apaches
    
   nginx_files:
-    image: den0303/nginx_testy:latest
+    image: den0303/nginx_testy:${TAG}
     ports:
       - "80:80"
     depends_on:

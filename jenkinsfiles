@@ -2,6 +2,9 @@ pipeline {
     agent {
         label 'slave1'
     }
+    environment {
+        TAG = "${env.BUILD_NUMBER}"
+    }
     stages {
         stage('Clone') {
             steps {
@@ -51,9 +54,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
-                sh '''
-                docker compose -f docker-compose.yaml up -d
-                '''
+                sh """
+                export TAG=${env.BUILD_NUMBER}
+                docker compose -f /home/ubuntu/jenkins/workspace/task18/docker-compose.yaml up -d
+                """
             }
         }
     }
