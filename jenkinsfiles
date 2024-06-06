@@ -9,15 +9,16 @@ pipeline {
         stage('Clone') {
             steps {
                 echo 'Building...'
-                sh '''
-                if [ -d "task18" ]; then
-                    cd task18
-                    git pull
-                    cd ..
-                else
-                    git clone https://github.com/BalakhonovDenis/jenkinstask.git
-                fi
-                '''
+               sshagent(['github-ssh-key']) {
+                    sh '''
+                    if [ -d "task18" ]; then
+                        cd task18
+                        git pull
+                        cd ..
+                    else
+                        git clone git@github.com:BalakhonovDenis/jenkinstask.git
+                    fi
+                    '''
             }
         }
         stage('Build') {
